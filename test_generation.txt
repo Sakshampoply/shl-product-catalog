@@ -1,0 +1,78 @@
+================================================================================
+SHL ASSESSMENT RECOMMENDATION SYSTEM - TEST PREDICTIONS
+================================================================================
+
+Loading retriever...
+✓ Using Gemini embeddings (gemini-embedding-001)
+✓ Using query expansion with Gemini 2.5 Flash
+✓ Retriever loaded
+
+Loading test data from: /Users/sakshampoply/Downloads/Gen_AI Dataset/Test-Set-Table 1.csv
+✓ Found 9 unique queries
+
+Generating predictions...
+[1/9] Processing: Looking to hire mid-level professionals who are proficient in Python, SQL and Ja...
+  ✓ Generated 10 recommendations
+[2/9] Processing: Job Description
+
+ Join a community that is shaping the future of work! 
+
+ SHL, P...
+  ✓ Generated 10 recommendations
+[3/9] Processing: I am hiring for an analyst and wants applications to screen using Cognitive and ...
+  ✓ Generated 10 recommendations
+[4/9] Processing: I have a JD Job Description
+
+ People Science. People Answers  !
+
+Do you love con...
+Warning: Query expansion failed (429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.), using original query
+  ✓ Generated 10 recommendations
+[5/9] Processing: I am new looking for new graduates in my sales team, suggest an 30 min long asse...
+  ✓ Generated 10 recommendations
+[6/9] Processing: For Marketing - Content Writer Position
+
+Department: Marketing
+
+Location: Gurugr...
+  ✓ Generated 10 recommendations
+[7/9] Processing: I want to hire a product manager with 3-4 years of work experience and expertise...
+Warning: Query expansion failed (429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.), using original query
+  ✓ Generated 10 recommendations
+[8/9] Processing: Suggest me an assessment for the JD below Job Description
+
+ Find purpose in each...
+Warning: Query expansion failed (429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 54.510228845s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+}
+, retry_delay {
+  seconds: 54
+}
+]), using original query
+  ✓ Generated 10 recommendations
+[9/9] Processing: I want to hire Customer support executives who are expert in English communicati...
+Warning: Query expansion failed (429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 53.376554938s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+}
+, retry_delay {
+  seconds: 53
+}
+]), using original query
+  ✓ Generated 10 recommendations
+
+================================================================================
+✓ Test predictions saved to: test_predictions.csv
+  Total rows: 90
+  Queries: 9
+
+================================================================================
