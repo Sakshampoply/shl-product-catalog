@@ -1,0 +1,7 @@
+{
+  "model": "gemini-embedding-001",
+  "dimension": 3072,
+  "num_records": 353,
+  "index_type": "IndexFlatIP",
+  "similarity_metric": "cosine"
+}

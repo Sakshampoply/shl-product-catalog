@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHL Assessment Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .slider-group {
+            flex: 1;
+        }
+
+        .slider-group label {
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .slider-value {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .results-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .results-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .results-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .assessment-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .assessment-card:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .assessment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .assessment-title {
+            flex: 1;
+        }
+
+        .assessment-title h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .assessment-title a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .assessment-title a:hover {
+            text-decoration: underline;
+        }
+
+        .assessment-score {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .assessment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .error {
+            background: #ffe0e0;
+            border: 2px solid #ff5555;
+            color: #cc0000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .assessment-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .assessment-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 SHL Assessment Recommendation System</h1>
+            <p>Find the perfect assessments for your hiring needs using AI-powered recommendations</p>
+        </div>
+
+        <div class="search-container">
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="query">Enter your query or job description:</label>
+                    <textarea 
+                        id="query" 
+                        name="query" 
+                        placeholder="Example: Looking to hire mid-level professionals who are proficient in Python, SQL and JavaScript. Need an assessment package that can test all skills with max duration of 60 minutes."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="controls">
+                    <div class="slider-group">
+                        <label for="topK">
+                            Number of recommendations: 
+                            <span class="slider-value" id="topKValue">10</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            id="topK" 
+                            name="topK" 
+                            min="1" 
+                            max="10" 
+                            value="10"
+                        >
+                    </div>
+                    <button type="submit" id="submitBtn">Get Recommendations</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your query and finding the best assessments...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="results-container" id="results">
+            <div class="results-header">
+                <h2>📊 Recommended Assessments</h2>
+                <div class="results-info">
+                    <span id="resultsCount"></span>
+                </div>
+            </div>
+            <div id="assessmentsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // API endpoint configuration
+        const API_BASE_URL = 'http://localhost:8000';
+
+        // DOM elements
+        const form = document.getElementById('searchForm');
+        const queryInput = document.getElementById('query');
+        const topKSlider = document.getElementById('topK');
+        const topKValue = document.getElementById('topKValue');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        const resultsCount = document.getElementById('resultsCount');
+        const assessmentsList = document.getElementById('assessmentsList');
+
+        // Update slider value display
+        topKSlider.addEventListener('input', (e) => {
+            topKValue.textContent = e.target.value;
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = queryInput.value.trim();
+            const topK = parseInt(topKSlider.value);
+
+            if (!query) {
+                showError('Please enter a query');
+                return;
+            }
+
+            await getRecommendations(query, topK);
+        });
+
+        // Get recommendations from API
+        async function getRecommendations(query, topK) {
+            // Show loading, hide results and errors
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            error.style.display = 'none';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/recommend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query, top_k: topK }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to get recommendations');
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (err) {
+                showError(`Error: ${err.message}`);
+            } finally {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Display results
+        function displayResults(data) {
+            const { recommendations, total } = data;
+
+            resultsCount.textContent = `Found ${total} recommended assessments`;
+            assessmentsList.innerHTML = '';
+
+            if (total === 0) {
+                assessmentsList.innerHTML = '<div class="no-results">No assessments found. Try a different query.</div>';
+            } else {
+                recommendations.forEach((assessment, index) => {
+                    const card = createAssessmentCard(assessment, index + 1);
+                    assessmentsList.appendChild(card);
+                });
+            }
+
+            results.style.display = 'block';
+        }
+
+        // Create assessment card
+        function createAssessmentCard(assessment, rank) {
+            const card = document.createElement('div');
+            card.className = 'assessment-card';
+
+            const score = (assessment.score * 100).toFixed(1);
+
+            card.innerHTML = `
+                <div class="assessment-header">
+                    <div class="assessment-title">
+                        <h3>${rank}. ${assessment.name}</h3>
+                        <a href="${assessment.url}" target="_blank">View Details →</a>
+                    </div>
+                    <div class="assessment-score">${score}% Match</div>
+                </div>
+
+                <div class="assessment-details">
+                    ${assessment.duration_minutes ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">${assessment.duration_minutes} minutes</div>
+                        </div>
+                    ` : ''}
+                    
+                    ${assessment.test_types.length > 0 ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Test Types</div>
+                            <div class="tags">
+                                ${assessment.test_types.map(type => `<span class="tag">${type}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${assessment.job_levels.length > 0 ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Job Levels</div>
+                            <div class="detail-value">${assessment.job_levels.slice(0, 3).join(', ')}${assessment.job_levels.length > 3 ? '...' : ''}</div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                ${assessment.description ? `
+                    <div class="description">${assessment.description}</div>
+                ` : ''}
+            `;
+
+            return card;
+        }
+
+        // Show error message
+        function showError(message) {
+            error.textContent = message;
+            error.style.display = 'block';
+            results.style.display = 'none';
+        }
+
+        // Check API health on load
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                if (data.status !== 'ok') {
+                    showError('⚠️ API service is not ready. Please wait a moment and try again.');
+                }
+            } catch (err) {
+                showError('⚠️ Unable to connect to API. Please ensure the backend server is running on port 8000.');
+            }
+        }
+
+        // Check health on page load
+        checkHealth();
+    </script>
+</body>
+</html>
