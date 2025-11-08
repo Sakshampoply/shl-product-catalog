@@ -13,13 +13,13 @@ import sys
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.hybrid_retriever import HybridRetriever
+from src.multi_vector_retriever_v2 import MultiVectorRetrieverV2
 
 # Initialize FastAPI app
 app = FastAPI(
     title="SHL Assessment Recommendation API",
-    description="Intelligent assessment recommendation system using hybrid RAG",
-    version="1.0.0",
+    description="Intelligent assessment recommendation system using Multi-Vector RAG with Query Deconstruction",
+    version="2.0.0",
 )
 
 # Add CORS middleware
@@ -32,7 +32,7 @@ app.add_middleware(
 )
 
 # Initialize retriever (will be loaded on startup)
-retriever: Optional[HybridRetriever] = None
+retriever: Optional[MultiVectorRetrieverV2] = None
 
 
 # Request/Response models
@@ -88,8 +88,8 @@ async def startup_event():
     """Initialize retriever on startup."""
     global retriever
     try:
-        retriever = HybridRetriever(data_dir="data")
-        print("✓ Retriever initialized successfully")
+        retriever = MultiVectorRetrieverV2(data_dir="data", gemini_dir="data/gemini")
+        print("✓ Multi-Vector Retriever V2 initialized successfully")
     except Exception as e:
         print(f"✗ Failed to initialize retriever: {e}")
         raise

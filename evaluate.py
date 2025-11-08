@@ -1,5 +1,6 @@
 """
 Script to evaluate the recommendation system using the training dataset.
+Multi-Vector V2 with Query Deconstruction + LLM Reranking.
 """
 
 import sys
@@ -9,7 +10,7 @@ import pandas as pd
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent))
 
-from src.hybrid_retriever import HybridRetriever
+from src.multi_vector_retriever_v2 import MultiVectorRetrieverV2
 from src.evaluator import Evaluator, normalize_url
 
 
@@ -17,12 +18,13 @@ def main():
     """Run evaluation on training dataset."""
     print("=" * 80)
     print("SHL ASSESSMENT RECOMMENDATION SYSTEM - EVALUATION")
+    print("Multi-Vector V2: Query Deconstruction → Multi-Vector Search → LLM Reranking")
     print("=" * 80)
     print()
 
     # Initialize retriever
-    print("Loading retriever...")
-    retriever = HybridRetriever(data_dir="data")
+    print("Loading Multi-Vector Retriever V2...")
+    retriever = MultiVectorRetrieverV2(data_dir="data", gemini_dir="data/gemini")
     print("✓ Retriever loaded")
     print()
 
@@ -41,15 +43,8 @@ def main():
         print(f"[{i}/{len(evaluator.ground_truth)}] Processing: {query[:80]}...")
 
         try:
-            # Use semantic-focused weights: FAISS=0.5, BM25=0.3, metadata=0.2, no hard constraints
-            results = retriever.retrieve(
-                query,
-                top_k=10,
-                faiss_weight=0.5,
-                bm25_weight=0.3,
-                metadata_weight=0.2,
-                enforce_constraints=False,
-            )
+            # Use multi-vector retrieval
+            results = retriever.retrieve(query, top_k=10)
             predicted_urls = [r["url"] for r in results]
             all_predictions[query] = predicted_urls
 

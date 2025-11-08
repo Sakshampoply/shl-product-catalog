@@ -1,5 +1,5 @@
 """
-Script to generate predictions on the test dataset.
+Script to generate predictions on the test dataset using Multi-Vector V2.
 """
 
 import sys
@@ -9,19 +9,20 @@ import pandas as pd
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent))
 
-from src.hybrid_retriever import HybridRetriever
+from src.multi_vector_retriever_v2 import MultiVectorRetrieverV2
 
 
 def main():
     """Generate predictions for test dataset."""
     print("=" * 80)
     print("SHL ASSESSMENT RECOMMENDATION SYSTEM - TEST PREDICTIONS")
+    print("Multi-Vector V2 with Query Deconstruction + LLM Reranking")
     print("=" * 80)
     print()
 
     # Initialize retriever
-    print("Loading retriever...")
-    retriever = HybridRetriever(data_dir="data")
+    print("Loading Multi-Vector Retriever V2...")
+    retriever = MultiVectorRetrieverV2(data_dir="data", gemini_dir="data/gemini")
     print("✓ Retriever loaded")
     print()
 
@@ -43,15 +44,8 @@ def main():
         print(f"[{i}/{len(queries)}] Processing: {query[:80]}...")
 
         try:
-            # Use semantic-focused configuration for best performance
-            results = retriever.retrieve(
-                query,
-                top_k=10,
-                faiss_weight=0.5,
-                bm25_weight=0.3,
-                metadata_weight=0.2,
-                enforce_constraints=False,
-            )
+            # Use multi-vector retrieval
+            results = retriever.retrieve(query, top_k=10)
 
             # Add predictions for this query
             for result in results:
@@ -63,6 +57,9 @@ def main():
 
         except Exception as e:
             print(f"  ✗ Error: {e}")
+            import traceback
+
+            traceback.print_exc()
 
     print()
     print("=" * 80)
