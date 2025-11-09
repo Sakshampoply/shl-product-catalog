@@ -16,8 +16,9 @@ export default function Home() {
     setError(null);
 
     try {
-      // Call Python backend directly (assumes Flask/FastAPI running on localhost:5000)
-      const response = await fetch('http://localhost:8000/recommend', {
+      // Call Python backend (uses environment variable for production, localhost for development)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/recommend`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ export default function Home() {
       setResults(data.recommendations || []);
     } catch (err) {
       console.error('Error:', err);
-      setError('Failed to get recommendations. Please check if the Python backend is running on port 8000.');
+      setError('Failed to get recommendations. The service may be starting up. Please try again in a moment.');
       setResults([]);
     } finally {
       setLoading(false);
