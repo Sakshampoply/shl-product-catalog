@@ -9,6 +9,11 @@ from typing import List, Optional
 import uvicorn
 from pathlib import Path
 import sys
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -96,9 +101,11 @@ async def startup_event():
 
 
 @app.get("/health", response_model=HealthResponse)
+@app.head("/health")
 async def health_check():
     """
     Health check endpoint to verify API is running.
+    Supports both GET and HEAD methods for monitoring services.
 
     Returns:
         HealthResponse with status and message
